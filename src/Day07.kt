@@ -14,8 +14,8 @@ object Day07 {
                     command.isDirectoryChangeToRoot() ->
                         currentDirectory = directoryRoot
 
-                    command.isDirectoryChangeToParent() -> currentDirectory =
-                        currentDirectory.parent ?: throw IllegalStateException("Batman")
+                    command.isDirectoryChangeToParent() ->
+                        currentDirectory = currentDirectory.parent ?: throw IllegalStateException("Batman")
 
                     command.isDirectoryChangeToChild() -> currentDirectory =
                         currentDirectory.findChild(command.line.substring(5))
