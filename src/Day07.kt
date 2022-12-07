@@ -4,6 +4,19 @@ object Day07 {
     private const val HARD_DRIVE_SIZE = 70_000_000
     private const val SPACE_NEEDED = 30_000_000
 
+    fun part1() = getRoot()
+        .getChildrenSizes()
+        .filter { it <= MAX_SIZE }
+        .sum()
+
+    fun part2() = getRoot()
+        .getChildrenSizes()
+        .sorted()
+        .let { sizes ->
+            val spaceTaken = sizes.max()
+            sizes.first { spaceTaken + SPACE_NEEDED - HARD_DRIVE_SIZE <= it }
+        }
+
     private fun getRoot(): Node = readInput("day07")
         .map(::TerminalCommand)
         .let { lines ->
@@ -28,18 +41,6 @@ object Day07 {
                 }
             }
             directoryRoot
-        }
-
-    fun part1() = getRoot()
-        .getChildrenSizes()
-        .filter { it <= MAX_SIZE }.sum()
-
-    fun part2() = getRoot()
-        .getChildrenSizes()
-        .sorted()
-        .let { sizes ->
-            val spaceTaken = sizes.max()
-            sizes.first { spaceTaken + SPACE_NEEDED - HARD_DRIVE_SIZE <= it }
         }
 }
 
