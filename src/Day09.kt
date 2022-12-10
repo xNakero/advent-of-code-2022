@@ -19,15 +19,14 @@ object Day09 {
             r.updated(updatedHead, updatedTail)
         }
 
-    private fun updateTail(newHead: Coordinate, rope: Rope): Tail {
-        val knots = (listOf(newHead) + rope.tail).toMutableList()
-        knots.indices.windowed(2, 1).forEach {
-            if (knots[it[0]].isRequiredToMove(knots[it[1]])) {
-                knots[it[1]] = knots[it[1]].moveTowards(knots[it[0]])
-            }
-        }
-        return knots.subList(1, knots.size).toList()
-    }
+    private fun updateTail(newHead: Coordinate, rope: Rope): Tail =
+        (listOf(newHead) + rope.tail).toMutableList()
+            .also { knots ->
+                knots.indices.windowed(2, 1).forEach { pair ->
+                    takeIf { knots[pair[0]].isRequiredToMove(knots[pair[1]]) }
+                        ?.also { knots[pair[1]] = knots[pair[1]].move(knots[pair[0]]) }
+                }
+            }.let { it.subList(1, it.size).toList() }
 
     private fun readCommands() = readInput("day09")
         .map { line -> line.split(" ").let { RopeCommand(it[0], it[1].toInt()) } }
@@ -61,10 +60,10 @@ data class Coordinate(val x: Int = 0, val y: Int = 0) {
             else -> throw InvalidDirectionException(direction)
         }
 
-    fun moveTowards(other: Coordinate): Coordinate =
+    fun move(other: Coordinate): Coordinate =
         Coordinate(
-            (other.x - x).sign + x,
-            (other.y - y).sign + y
+            x = (other.x - x).sign + x,
+            y = (other.y - y).sign + y
         )
 
     fun isRequiredToMove(other: Coordinate): Boolean = distanceToOther(other) !in setOf(0.0, 1.0, sqrt(2.0))
